@@ -32,7 +32,6 @@ def get_image_by_id(image_id):
     Get image by its image_id
     """
     image_dict = get_images()
-    print(image_dict['images'])
     for image in image_dict['images']:
         if image['id'] == image_id:
             response = 200

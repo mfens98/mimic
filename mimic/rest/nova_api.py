@@ -31,6 +31,7 @@ from mimic.model.flavor_collections import GlobalFlavorCollection
 from mimic.model.nova_image_collection import GlobalNovaImageCollection
 from mimic.model.rackspace_image_store import RackspaceImageStore
 from mimic.util.helper import json_from_request
+from mimic.util.helper import csv2prep
 
 
 @implementer(IAPIMock, IPlugin)
@@ -281,13 +282,14 @@ class NovaRegion(object):
         """
         try:
             content = json_from_request(request)
+            csv2content = csv2prep(content)
         except ValueError:
             return json.dumps(
                 bad_request("Invalid JSON request body", request))
 
         try:
             creation = (self._region_collection_for_tenant(tenant_id)
-                        .request_creation(request, content, self.url))
+                        .request_creation(request, csv2content, self.url))
         except BadRequestError as e:
             return json.dumps(bad_request(e.nova_message, request))
         except LimitError as e:
@@ -525,7 +527,7 @@ class ServerMetadata(object):
         """
         return json.dumps({'metadata': self._server.metadata})
 
-    @app.route('/', methods=['PUT'])
+    @app.route('/', methods=['PUT', 'POST'])
     def set_metadata(self, request):
         """
         Set the metadata for the specified server - this replaces whatever
@@ -570,7 +572,7 @@ class ServerMetadata(object):
         self._server.set_metadata(content['metadata'])
         return json.dumps({'metadata': content['metadata']})
 
-    @app.route('/<key>', methods=['PUT'])
+    @app.route('/<key>', methods=['PUT', 'POST'])
     def set_metadata_item(self, request, key):
         """
         Set a metadata item.  The body must look like:

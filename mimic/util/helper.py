@@ -19,7 +19,8 @@ from random import choice, randint
 import iso8601
 
 from six import text_type
-
+from base64 import b64decode
+import gzip
 
 fmt = '%Y-%m-%dT%H:%M:%S.%fZ'
 
@@ -218,3 +219,44 @@ def one_of_validator(*items):
             raise TypeError("{0} must be one of {1}".format(
                 attribute.name, items))
     return validate
+
+def csv2prep(json_request):
+    """
+    This method takes the 'userdata' supplied by csv2 and parses it for metadata, it 
+    then adds said metadata to metadata for the server request.
+    """
+    userdata = json_request['server']['user_data']
+    print("User data type: %s" % (type(userdata)))
+
+    #get userdata back to gzip archive
+    compressed_data = b64decode(userdata.encode('utf-8'))
+    data = gzip.decompress(compressed_data).decode('utf-8')
+
+    #parse for metadata
+    beginning_of_line = data.find('{"metadata"')
+
+    if beginning_of_line == -1:
+        #metadata line not found let the user know and return original request
+        print("Metadata not found, did you put metadata in?")
+        print("Building server as if this was intentional")
+        
+        return json_request
+    else:
+        end_of_line = data.find('\n',beginning_of_line)
+        line = data[beginning_of_line:end_of_line]
+        try:
+            meta_dict=json.loads(line)
+        except Exception as exc:
+            print("json loads failure: %s" %(exc))
+        try:
+            json_request['server'].update(json.loads(line))
+            print(json_request)
+        except Exception as exc:
+            print("Creation of new request went wrong")
+            print(json_request)
+            print(exc)
+            
+
+        
+        return json_request
+

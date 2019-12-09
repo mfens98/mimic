@@ -100,12 +100,11 @@ class GlanceMock(object):
         """
         
         response , image_info = get_image_by_id(image_id)
-        if response == 404:
-            request.setResponseCode(404)
-            return ''
+        request.setResponseCode(response)
         if response == 200:
-            request.setResponseCode(200)
             return json.dumps(image_info)
+        else:
+            return ''
 
 
 class GlanceAdminApi(object):

@@ -12,6 +12,7 @@ from mimic.rest.mimicapp import MimicApp
 from mimic.catalog import Entry
 from mimic.catalog import Endpoint
 from mimic.imimic import IAPIMock
+from mimic.canned_responses.neutron import get_networks, get_network_by_id
 
 
 @implementer(IAPIMock, IPlugin)
@@ -63,10 +64,44 @@ class NeutronMock(object):
     app = MimicApp()
 
     @app.route('/v2/<string:tenant_id>/networks', methods=['GET'])
-    def get_networks(self, request, tenant_id):
+    def network_list(self, request, tenant_id):
+        """
+        Gets network list
+        """
+        request.setResponseCode(200)
+        return json.dumps({'networks' : []})
+
+
+    @app.route('/v2/<string:tenant_id>/v2.0/networks', methods=['GET'])
+    def list_networks(self, request, tenant_id):
         """
         Retrieves list of networks to which the specified tenant has access.
         http://developer.openstack.org/api-ref-networking-v2.html#listNetworks
         """
         request.setResponseCode(200)
-        return json.dumps({'networks': []})
+        print("Hit correct endpoint")
+        return json.dumps(get_networks())
+
+    @app.route('/v2/<string:tenant_id>/v2.0/networks/<string:network_id>', methods=['GET'])
+    def get_network_id(self, request, tenant_id, network_id):
+        """
+        Retrieves a specific networks to which the specified tenant has access.
+        http://developer.openstack.org/api-ref-networking-v2.html#listNetworks
+        """
+        
+        response, network_info = get_network_by_id(network_id)
+
+        request.setResponseCode(response)
+        if response == 200:
+            return json.dumps(network_info)
+        else:
+            return ''
+
+    @app.route('/v2/<string:tenant_id>/v2.0/security-groups', methods=['GET'])
+    def get_security_groups(self, request, tenant_id):
+        """
+        Retrieves list of security-groups to which the specified tenant has access.
+        http://developer.openstack.org/api-ref-networking-v2.html#security-groups-security-groups
+        """
+        request.setResponseCode(200)
+        return json.dumps({'security_groups': []})

@@ -8,7 +8,6 @@ def get_networks():
     """
     Canned response for neutron get networks call
     """
-    print("Called networks function")
     return networks
 
 def get_network_by_id(network_id):

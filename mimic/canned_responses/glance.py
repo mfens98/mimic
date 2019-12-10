@@ -27,17 +27,28 @@ def get_image_schema():
     """
     return image_schema
 
-def get_image_by_id(image_id):
+def get_image_by_key(image_key):
     """
-    Get image by its image_id
+    Get image by its image_id or name
+    Assumes the name of one image is not the id of a different image
+    Will work if the image_id and image_name are identical
     """
     image_dict = get_images()
+
     for image in image_dict['images']:
-        if image['id'] == image_id:
+        if image['id'] == image_key:
             response = 200
             return (response, image)
+            
+        elif image['name'] == image_key:
+            response = 200
+            output_dict = {"images" : [image]}
 
-    # image id not in images return 404 not found
+            return response, output_dict
+
+        
+
+    # image key not in images return 404 not found
     response = 404
     return(response, '')
 

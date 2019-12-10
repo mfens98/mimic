@@ -10,7 +10,7 @@ from uuid import uuid4
 from six import text_type
 from zope.interface import implementer
 from twisted.plugin import IPlugin
-from mimic.canned_responses.glance import get_images, get_image_schema, get_v2_images, get_image_by_id
+from mimic.canned_responses.glance import get_images, get_image_schema, get_v2_images, get_image_by_key
 from mimic.rest.mimicapp import MimicApp
 from mimic.catalog import Entry
 from mimic.catalog import Endpoint
@@ -50,6 +50,16 @@ class GlanceApi(object):
         """
         return GlanceMock(self, uri_prefix, session_store, region).app.resource()
 
+#    def _get_session(self, session_store, tenant_id):
+#        """
+#        Retrieve or create a new Glance session from a given tenant identifier
+#        and :obj:`SessionStore`
+#        """
+#
+#        return(
+#            session_store.session_for_tenant_id(tenant_id)
+#            .dtta
+
 
 class GlanceMock(object):
     """
@@ -65,6 +75,23 @@ class GlanceMock(object):
         self._session_store = session_store
         self._name = name
 
+#    def url(self, suffix):
+#        """
+#        Generate a URL to an object within the Glance URL heirarch, given the
+#        part of the URL that comes after.
+#        """
+#        return "/".join(self.uri_prefix.rstrip("/"), suffix])
+
+#    def _region_collection_for_tenant(self, tenant_id):
+#        """
+#        Get the given image-cache object for the given tenant, creating one if
+#        there isn't one.
+#        """
+#
+#        return (self._api_mock._get_session(self._session_store, tenant_id)
+#                .collection_for_region(self.name))
+
+
     app = MimicApp()
 
     @app.route('/v2/<string:tenant_id>/images', methods=['GET'])
@@ -79,9 +106,35 @@ class GlanceMock(object):
     @app.route('/v2/<string:tenant_id>/v2/images', methods=['GET'])
     def get_v2_images(self, request, tenant_id):
         """
-        Returns a list of glance images. Currently there is no provision
-        for shared versus unshared images in the response
+        Returns a list of glance images. 
         """
+        #if doing a name request get name
+        argName = (request.args.get(b'name', [None])[0])
+        if argName is not None:
+            argName = argName.decode("utf-8")
+            response, image_info = get_image_by_key(argName)
+            request.setResponseCode(response)
+            if response == 200:
+                return json.dumps(image_info)
+            else:
+                return ''
+         
+
+#        def _optextarg(name):
+#            arg = request.args.get(name, [None])[0]
+#            if arg is None:
+#                return None
+#            return arg.decode("utf-8")
+#        return (
+#            self._region_collection_for_tenant(tenant_id)
+#            .request_list(
+#                request, include_details=False, absolutize_url=self.url,
+#                name=_optextarg(b'name') or u'',
+#                limit=_optextarg(b'limit'),
+#                marker=_optextarg(b'marker'),
+#            )
+#        )
+
         request.setResponseCode(200)
         return json.dumps(get_v2_images())
 
@@ -99,7 +152,7 @@ class GlanceMock(object):
         Returns image with given `image_id`.
         """
         
-        response , image_info = get_image_by_id(image_id)
+        response , image_info = get_image_by_key(image_id)
         request.setResponseCode(response)
         if response == 200:
             return json.dumps(image_info)

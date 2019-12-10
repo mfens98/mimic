@@ -79,7 +79,6 @@ class NeutronMock(object):
         http://developer.openstack.org/api-ref-networking-v2.html#listNetworks
         """
         request.setResponseCode(200)
-        print("Hit correct endpoint")
         return json.dumps(get_networks())
 
     @app.route('/v2/<string:tenant_id>/v2.0/networks/<string:network_id>', methods=['GET'])

@@ -225,8 +225,12 @@ def csv2prep(json_request):
     This method takes the 'userdata' supplied by csv2 and parses it for metadata, it 
     then adds said metadata to metadata for the server request.
     """
-    userdata = json_request['server']['user_data']
-    print("User data type: %s" % (type(userdata)))
+    try:
+        userdata = json_request['server']['user_data']
+        print("User data type: %s" % (type(userdata)))
+    except KeyError:
+        print("No user data found, skipping")
+        return json_request
 
     #get userdata back to gzip archive
     compressed_data = b64decode(userdata.encode('utf-8'))
@@ -240,6 +244,10 @@ def csv2prep(json_request):
         print("Metadata not found, did you put metadata in?")
         print("Building server as if this was intentional")
         
+        return json_request
+    elif data[beginning_of_line] == '#':
+        #metadata commented out, do nothing
+
         return json_request
     else:
         end_of_line = data.find('\n',beginning_of_line)

@@ -24,11 +24,14 @@ def get_limit():
                           "maxSecurityGroups": -1,
                           "totalFloatingIpsUsed": 0,
                           "maxTotalCores": -1,
+                          "maxServerGroups": -1,
+                          "maxServerGroupMembers": -1,
+                          "totalServerGroupsUsed": 7,
                           "totalSecurityGroupsUsed": 0,
                           "maxTotalPrivateNetworks": 3,
                           "maxTotalFloatingIps": -1,
                           "maxTotalInstances": 200,
-                          "maxTotalRAMSize": 256000}}}
+                          "maxTotalRAMSize": -1}}}
 
 
 def get_version_v2(uri):

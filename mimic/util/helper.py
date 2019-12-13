@@ -245,10 +245,7 @@ def csv2prep(json_request):
         print("Building server as if this was intentional")
         
         return json_request
-    elif data[beginning_of_line] == '#':
-        #metadata commented out, do nothing
-
-        return json_request
+    #the cloudscheduler GUI already handles commented out lines
     else:
         end_of_line = data.find('\n',beginning_of_line)
         line = data[beginning_of_line:end_of_line]
@@ -256,6 +253,7 @@ def csv2prep(json_request):
             meta_dict=json.loads(line)
         except Exception as exc:
             print("json loads failure: %s" %(exc))
+            print(line)
         try:
             json_request['server'].update(json.loads(line))
             print(json_request)

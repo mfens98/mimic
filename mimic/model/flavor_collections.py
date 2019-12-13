@@ -11,7 +11,7 @@ from json import dumps
 from mimic.model.flavors import (
     RackspaceStandardFlavor, RackspaceComputeFlavor, RackspaceMemoryFlavor,
     RackspaceOnMetalFlavor, RackspaceIOFlavor, RackspaceGeneralFlavor,
-    RackspacePerformance1Flavor, RackspacePerformance2Flavor)
+    RackspacePerformance1Flavor, RackspacePerformance2Flavor, MattsFlavors)
 
 from mimic.model.nova_objects import not_found
 
@@ -42,7 +42,7 @@ class RegionalFlavorCollection(object):
         rackspace_flavors = [RackspaceStandardFlavor, RackspaceComputeFlavor,
                              RackspacePerformance1Flavor, RackspaceOnMetalFlavor,
                              RackspacePerformance2Flavor, RackspaceMemoryFlavor,
-                             RackspaceIOFlavor, RackspaceGeneralFlavor]
+                             RackspaceIOFlavor, RackspaceGeneralFlavor, MattsFlavors]
 
         if len(self.flavors_store) < 1:
             for flavor_class in rackspace_flavors:

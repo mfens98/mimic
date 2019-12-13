@@ -73,6 +73,26 @@ class Flavor(object):
         })
         return template
 
+class MattsFlavors(Flavor):
+    """
+    Matt's custom flavors, add yours here if you'd like
+    """
+    flavors = {"1 core 1GB" : {"id" : "matt1-1", "ram" : 1024, "vcpus" : 1, "rxtx_factor" : 80,
+                               "disk" : 20},
+               "1 core 2GB" : {"id" : "matt1-2", "ram" : 2048, "vcpus" : 1, "rxtx_factor" : 120,
+                               "disk" : 40},
+               "1 core 4GB" : {"id" : "matt1-3", "ram" : 4096, "vcpus" : 1, "rxtx_factor" : 400,
+                               "disk" : 80}}
+    def extra_specs_json(self):
+        """
+        Create a JSON-serializable data structure describing
+        ``OS-FLV-WITH-EXT-SPECS:extra_specs`` for Matt Flavor.
+        """
+        return {
+            "class": "Matts Flavors",
+            "policy_class": "matt_flavor"
+        }
+
 
 class RackspaceStandardFlavor(Flavor):
     """

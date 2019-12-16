@@ -1,0 +1,36 @@
+Quick installation instructions for mimic (csv2)
+
+Note: Most of the commands and how to install are in the README.md, this is just a shorter version.
+Note: You probably want to run mimic in a python virtualenv since most of the packages mimic uses are pretty old
+
+0a) Clone this git repo (make sure you are using the 'mimic-csv2' branch)
+0b) Use the k8Manifest.yaml to start a kubernetes pod which contains the mimic container, this will allow you to connect any csv2 to mimic via the URL http://<k8sFQDN>:8900/identity/v2.0/
+0c) Build and/or run the mimic container instead of setting up the python virtual env, you will need to make sure to expose port 8900 in order for your local csv2 to see mimic at the URL in step 3 of the running in csv2 instructions
+
+1. Install & Create virtualenv
+  a. `pip3 install virtualenv`
+  b. `virtualenv -p python3 DEST_DIR`
+  c. `source DEST_DIR/bin/activate
+
+2. Install and run mimic in virtualenv
+  a. (from mimc repo directory) `pip3 install .`
+  b. twistd (-n) mimic (-v -r -l protocol:port)
+    i. the -n flag will run in daemonless mode which will log output to stdout or will make a log file in the mimic directory
+    ii. -v is verbose output -r is realtime (time moves as normal) -l allows you to change the port mimic runs on
+
+Mimic is now running. If you want to set up mimic as a cloud for csv2 make sure mimic is running on the same machine as your csv2 instance and do the following:
+  1. Create a new cloud on csv2 for mimic
+  2. make sure it is set as an 'openstack' cloud
+  3. URL= https://localhost:8900/identity/v2.0/
+  4. Region= ORD, IAD, DFW (I usually use ORD but technically they should all work)
+  5. Project name, along with username and password can be anything you want, mimic will authenticate any user under any project name
+
+
+Once you have mimic running with csv2, it should be able to boot VMs which end up in the 'unregistered' state if you haven't configured metadata
+
+In order to get your mimic vms to boot with various errors etc metadata needs to be specified.
+
+On the csv2 GUI either at the cloud or group level create a new file (call it whatever you want, I usually call it 'metadata.json')
+Specify metadata, according to metadata specified in mimic/canned_responses/mimic_presets.py under server or if you've coded in your own extra metadata you can use
+The way I wrote the code is that mimic will parse csv2's metadata for a line beginning with '{"meta' and use that line for the metadata so make sure that is how you are using it. I added a statement that logs when a vm is booted with no metadata so if it isn't seeing the metadata you should see a message in the logs if you look between all of the requests
+Note: Watch out as mimic wants a dictionary with only one key/value pair so for some of the metadata make sure you are escaping all the correct quotations

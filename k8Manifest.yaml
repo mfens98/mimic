@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mimic-svc
+spec:
+  selector:
+    app: "mimic"
+  ports:
+  - name: mimic
+    nodePort: 3900
+    port: 3900
+  type: NodePort
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mimic
+  labels:
+    app: 'mimic'
+spec:
+  containers:
+  - name: mimic
+    image: mfens98/mimic
+    ports:
+    - containerPort: 3900
+      name: mimic

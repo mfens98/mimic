@@ -21,7 +21,7 @@ metadata:
 spec:
   containers:
   - name: mimic
-    image: mfens98/mimic
+    image: YOURIMAGEHERE
     ports:
     - containerPort: 3900
       name: mimic

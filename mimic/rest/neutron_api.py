@@ -12,7 +12,7 @@ from mimic.rest.mimicapp import MimicApp
 from mimic.catalog import Entry
 from mimic.catalog import Endpoint
 from mimic.imimic import IAPIMock
-from mimic.canned_responses.neutron import get_networks, get_network_by_id
+from mimic.canned_responses.neutron import get_networks, get_network_by_key
 
 
 @implementer(IAPIMock, IPlugin)
@@ -78,6 +78,17 @@ class NeutronMock(object):
         Retrieves list of networks to which the specified tenant has access.
         http://developer.openstack.org/api-ref-networking-v2.html#listNetworks
         """
+        #if doing a name request get name
+        argName = (request.args.get(b'name', [None])[0])
+        if argName is not None:
+            argName = argName.decode("utf-8")
+            response, network_info = get_network_by_key(argName)
+            request.setResponseCode(response)
+            if response == 200:
+                return json.dumps(network_info)
+            else:
+                return ''
+
         request.setResponseCode(200)
         return json.dumps(get_networks())
 

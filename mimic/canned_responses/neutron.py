@@ -10,16 +10,20 @@ def get_networks():
     """
     return networks
 
-def get_network_by_id(network_id):
+def get_network_by_key(network_key):
     """
     Get network by its network_id
     """
 
     network_dict = get_networks()
     for network in network_dict['networks']:
-        if network['id'] == network_id:
+        if network['id'] == network_key:
             response = 200
-            return (response, image)
+            return (response, network)
+        elif network['name'] == network_key:
+            response = 200
+            output_dict = {"networks" : [network]}
+            return (response, output_dict)
 
     # network id not in networks return 404 not found
     response = 404

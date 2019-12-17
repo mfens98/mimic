@@ -18,9 +18,9 @@ def get_limit():
                           "maxPersonalitySize": 1000,
                           "maxSecurityGroupRules": -1,
                           "maxTotalKeypairs": 100,
-                          "totalCoresUsed": 5,
+                          "totalCoresUsed": 0,
                           "totalRAMUsed": 2560,
-                          "totalInstancesUsed": 5,
+                          "totalInstancesUsed": 0,
                           "maxSecurityGroups": -1,
                           "totalFloatingIpsUsed": 0,
                           "maxTotalCores": -1,
@@ -31,7 +31,7 @@ def get_limit():
                           "maxTotalPrivateNetworks": 3,
                           "maxTotalFloatingIps": -1,
                           "maxTotalInstances": 200,
-                          "maxTotalRAMSize": -1}}}
+                          "maxTotalRAMSize": 2048000000}}}
 
 
 def get_version_v2(uri):

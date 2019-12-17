@@ -1,0 +1,25 @@
+Here are the errors available to you for csv2 using mimic. They are coded like they would be if you were to put them in a metadata file so all
+you need to do is copy and paste them in and edit the appropriate places.
+
+Server_building:
+
+{"metadata" : {"server_building" : "time_in_seconds"}}  #Note: Don't forget to either set mimic to run in real time with the -r flag or tick the clock forward yourself
+
+Error on server(VM) boot:
+
+{"metadata" : {"create_server_failure" : "{\"message\" : \"Insert message here\" , \"code\" : code_value}"}} 
+
+Commonly used messages are:
+  
+  - "Not enough resources (cores, instances, etc)" Code: 403
+    - Sample message: "Quota exceeded for cores: Requested 16, but already used 40 of 40 cores (HTTP 403)"
+  - "Internal server error" Code: 500
+
+VM boots in error state:
+
+{"metadata" : {"server_error" : "true"}}  #Note: I don't think the 'true' value matters, although this hasn't been tested
+
+
+Error on delete server(VM):
+
+

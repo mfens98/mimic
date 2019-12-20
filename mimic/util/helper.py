@@ -227,7 +227,6 @@ def csv2prep(json_request):
     """
     try:
         userdata = json_request['server']['user_data']
-        print("User data type: %s" % (type(userdata)))
     except KeyError:
         print("No user data found, skipping")
         return json_request

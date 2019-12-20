@@ -32,21 +32,23 @@ def get_image_by_key(image_key):
     Get image by its image_id or name
     Assumes the name of one image is not the id of a different image
     Will work if the image_id and image_name are identical
+    Assumes image_ids are unique but not names
     """
     image_dict = get_images()
-
+    output_dict = {"images" : []}
     for image in image_dict['images']:
         if image['id'] == image_key:
             response = 200
             return (response, image)
             
         elif image['name'] == image_key:
-            response = 200
-            output_dict = {"images" : [image]}
+           
+            output_dict['images'].append(image)
 
-            return response, output_dict
-
-        
+    if len(output_dict['images']) > 0:
+        #output dict is not empty return the dict
+        response=200
+        return (response, output_dict)
 
     # image key not in images return 404 not found
     response = 404

@@ -182,3 +182,4 @@ docker build -t mimic . && docker run --restart=no --rm=true -p 8900:8900 mimic
 ```
 
 This will expose Mimic on port 8900, so you can access it directly from the host. The default port exposure is intended for communication between containers; see the Docker documentation for more information. If you're using `boot2docker`, run `boot2docker ip` to find the right IP.
+The container image for 'mimic-csv2' will pull down the latest commits from the mimic-csv2 git branch before starting to allow new updates to automatically be added to the container without having to do a whole new build.
